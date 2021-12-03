@@ -2,3 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.DS_Store
+
+# Future solutions
+/2021/0[4-9]
+/2021/[1-2][0-9]

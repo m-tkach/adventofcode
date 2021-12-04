@@ -8,25 +8,18 @@ def is_row_win(board, used):
     return False
 
 def is_col_win(board, used):
-    for col in zip(*board):
-        if all(x in used for x in col):
-            return True
-    return False
+    return is_row_win(zip(*board), used)
 
 def process(data):
     draw, boards = data
-    used = set()
-    bingo_boards = {}
-    for timer, x in enumerate(draw):
-        used.add(x)
-        for i, board in enumerate(boards):
-            if i in bingo_boards:
-                continue
+    used = set(draw)
+    for x in draw[::-1]:
+        used.remove(x)
+        for board in boards:
             is_bingo = is_row_win(board, used) or is_col_win(board, used)
-            if is_bingo:
-                board_sum = sum(y for row in board for y in row if y not in used)
-                bingo_boards[i] = (timer, x * board_sum)
-    return max(bingo_boards.values())[1]
+            if not is_bingo:
+                board_sum = sum(y for row in board for y in row if y not in used and y != x)
+                return x * board_sum
 
 if __name__ == '__main__':
     input_file = 'example.txt' if '--example' in sys.argv[1:] else 'input.txt'

@@ -8,18 +8,10 @@ def get_permutation(display):
     return {c: i for i, c in enumerate(display)}
 
 def get_segment(permutation, pattern):
-    v = 0
-    for c in pattern:
-        v |= 1 << permutation[c]
-    return v
+    return sum(1 << permutation[c] for c in pattern)
 
 def try_fit(permutation, patterns):
-    view = set()
-    for pattern in patterns:
-        v = get_segment(permutation, pattern)
-        if v not in SEGMENTS:
-            return False
-    return True
+    return all(get_segment(permutation, pattern) in SEGMENTS for pattern in patterns)
 
 def process(data):
     display = [*'abcdefg']

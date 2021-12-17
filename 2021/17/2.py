@@ -15,8 +15,8 @@ def simulate(vel_x, vel_y, x_min, x_max, y_min, y_max):
 def process(data):
     (x_min, x_max), (y_min, y_max) = data
     total = 0
-    for vel_x in range(-999, 999):
-        for vel_y in range(-999, 999):
+    for vel_x in range(min(x_min, 0), max(x_max, 0) + 1):
+        for vel_y in range(y_min, abs(y_max) * 2 + 1):
             total += simulate(vel_x, vel_y, x_min, x_max, y_min, y_max)
     return total
 

@@ -200,30 +200,6 @@ class Hallway:
         self.positions[src_position] = amphipod
         amphipod.unmark_completed_DANGER()
 
-    def print(self):
-        n = len(self.positions) + 2
-        print('#' * n)
-        line = []
-        room_len = 0
-        for item in self.positions:
-            if item is None:
-                line.append('.')
-            elif isinstance(item, Room):
-                line.append('_')
-                room_len = max(room_len, len(item.amphipods))
-            else:
-                line.append(ite,get_type())
-        print('#' + ''.join(line) + '#')
-        for i in range(room_len - 1, -1, -1):
-            line = []
-            for item in self.positions:
-                if isinstance(item, Room):
-                    line.append(item.amphipods[i].get_type() if i < len(item.amphipods) else ' ')
-                else:
-                    line.append('#')
-            print('#' + ''.join(line) + '#')
-        print('#' * n)
-
 def go(hallway, rooms, energy, energy_limit):
     if hallway.is_settled():
         return energy

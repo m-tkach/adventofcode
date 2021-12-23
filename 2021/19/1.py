@@ -67,16 +67,6 @@ class Scanner:
                     for z_sign in -1, 1:
                         yield [x_sign, y_sign, z_sign], p
 
-class Dsu:
-    def __init__(self, n):
-        self.parents = [*range(n)]
-
-    def find(self, x):
-        return self.parents[x]
-
-    def set_parent(self, x, parent):
-        self.parents[x] = parent
-
 def process(data):
     scanners = []
     for scanner_data in data:
@@ -88,7 +78,6 @@ def process(data):
     queue = deque(range(len(scanners) - 1))
     while queue:
         scanner_id = queue.popleft()
-        print(f'Process #{scanner_id + 1}')
         scanner = scanners[scanner_id]
         status, extras = main_scanner.compare(scanner)
         if status:

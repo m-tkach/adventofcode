@@ -67,16 +67,6 @@ class Scanner:
                     for z_sign in -1, 1:
                         yield [x_sign, y_sign, z_sign], p
 
-class Dsu:
-    def __init__(self, n):
-        self.parents = [*range(n)]
-
-    def find(self, x):
-        return self.parents[x]
-
-    def set_parent(self, x, parent):
-        self.parents[x] = parent
-
 def process(data):
     scanners = []
     for scanner_data in data:

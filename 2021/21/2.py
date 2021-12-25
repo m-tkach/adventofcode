@@ -5,26 +5,27 @@ COUNTS = [0] * 10
 
 class Player:
     def __init__(self, pos):
-        self.dp = {(pos, 0, 0): 1}
+        self.dp = {0: {(pos, 0): 1}}
 
     def move(self, i):
-        new_dp = {}
-        for d in range(3, 10):
-            for x, p, j in self.dp:
-                if p < 21 and j + 1 == i:
-                    y = (x + d - 1) % 10 + 1
-                    if (y, p + y, i) not in new_dp:
-                        new_dp[(y, p + y, i)] = 0
-                    new_dp[(y, p + y, i)] += COUNTS[d] * self.dp[(x, p, j)]
-        self.dp.update(new_dp)
+        self.dp[i] = {}
+        for die in range(3, 10):
+            for (pos, points), ways in self.dp.get(i - 1, {}).items():
+                if points < 21:
+                    next_pos = (pos + die - 1) % 10 + 1
+                    if (next_pos, points + next_pos) not in self.dp[i]:
+                        self.dp[i][(next_pos, points + next_pos)] = 0
+                    self.dp[i][(next_pos, points + next_pos)] += COUNTS[die] * ways
 
     def get_wins(self, other, is_first):
         wins = 0
-        for x, q, i in self.dp:
-            if q > 20:
-                for y, p, j in other.dp:
-                    if i == j + is_first and p < 21:
-                        wins += self.dp[(x, q, i)] * other.dp[(y, p, j)]
+        for i, states in self.dp.items():
+            j = i - is_first
+            for (_, points), ways in states.items():
+                if points >= 21:
+                    for (_, other_points), other_ways in other.dp.get(j, {}).items():
+                        if other_points < 21:
+                            wins += ways * other_ways
         return wins
 
 def process(data):

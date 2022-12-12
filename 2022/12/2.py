@@ -21,7 +21,6 @@ def process(data):
         for j, c in enumerate(r):
             if c in 'Sa': start.append((i, j))
             if c == 'E': end = i, j
-    steps = 0
     q = deque(start)
     distance = {v: 0 for v in start}
     while q:

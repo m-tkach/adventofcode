@@ -20,7 +20,6 @@ def process(data):
         for j, c in enumerate(r):
             if c == 'S': start = i, j
             if c == 'E': end = i, j
-    steps = 0
     q = deque([start])
     distance = {start: 0}
     while q:

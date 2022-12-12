@@ -14,23 +14,24 @@ def is_edge(field, curr_y, curr_x, next_y, next_x):
     return False
 
 def process(data):
-    field = list(data)
-    start = end = None
-    for i, r in enumerate(field):
-        for j, c in enumerate(r):
-            if c == 'S': start = i, j
-            if c == 'E': end = i, j
-    q = deque([start])
-    distance = {start: 0}
+    field, distance, q, end = [], {}, deque(), None
+    for i, row in enumerate(data):
+        field.append(row)
+        for j, c in enumerate(row):
+            if c == 'S':
+                q.append((i, j))
+                distance[(i, j)] = 0
+            elif c == 'E':
+                end = i, j
     while q:
-        vertex = q.popleft()
+        y, x = vertex = q.popleft()
         if vertex == end:
             return distance[vertex]
-        y, x = vertex
         for dy, dx in zip([-1, 1, 0, 0], [0, 0, 1, -1]):
-            if is_edge(field, y, x, y + dy, x + dx) and (y + dy, x + dx) not in distance:
-                distance[(y + dy, x + dx)] = distance[vertex] + 1
-                q.append((y + dy, x + dx))
+            next_vertex = y + dy, x + dx
+            if is_edge(field, y, x, *next_vertex) and next_vertex not in distance:
+                distance[next_vertex] = distance[vertex] + 1
+                q.append(next_vertex)
 
 if __name__ == '__main__':
     input_file = 'example.txt' if '--example' in sys.argv[1:] else 'input.txt'

@@ -24,14 +24,14 @@ def process(data):
         covered_sensors = get_covered_sensors(sensors, x, y)
         while i < k and covered_sensors:
             step = 1 << 16
-            while step and not covered_sensors & get_covered_sensors(sensors, x + i + step, y - i - step):
+            while step and not covered_sensors & (cs := get_covered_sensors(sensors, x + i + step, y - i - step)):
                 step >>= 1
             if step:
                 i += step
-                covered_sensors &= get_covered_sensors(sensors, x + i, y - i)
+                covered_sensors &= cs
             else:
                 i += 1
-                covered_sensors = get_covered_sensors(sensors, x + i, y - i)
+                covered_sensors = cs
         if not covered_sensors:
             return (x + i) * 4000000 + y - i
     return None

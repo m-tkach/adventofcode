@@ -18,9 +18,11 @@ def process(data):
     sensors = [(*sensor, get_distance(sensor, beacon)) for sensor, beacon in data]
     for x, y, d in sensors:
         x, y = get_extreme_point(x, y, d)
+        if x < 0 or y < 0:
+            continue
         i, k = 0, min(y, d)
         covered_sensors = get_covered_sensors(sensors, x, y)
-        while i < k:
+        while i < k and covered_sensors:
             step = 1 << 16
             while step and not covered_sensors & get_covered_sensors(sensors, x + i + step, y - i - step):
                 step >>= 1
@@ -30,8 +32,8 @@ def process(data):
             else:
                 i += 1
                 covered_sensors = get_covered_sensors(sensors, x + i, y - i)
-            if not covered_sensors:
-                return (x + i) * 4000000 + y - i
+        if not covered_sensors:
+            return (x + i) * 4000000 + y - i
     return None
 
 if __name__ == '__main__':

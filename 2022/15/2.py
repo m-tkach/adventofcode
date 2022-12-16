@@ -5,20 +5,33 @@ def get_distance(point1, point2):
     (x1, y1), (x2, y2) = point1, point2
     return abs(x1 - x2) + abs(y1 - y2)
 
+def get_extreme_point(x, y, d):
+    x -= d + 1
+    if x < 0:
+        return 0, y + x
+    return x, y
+
+def get_covered_sensors(sensors, x, y):
+    return {i for i, (*sensor, d) in enumerate(sensors) if d >= get_distance((x, y), sensor)}
+
 def process(data):
     sensors = [(*sensor, get_distance(sensor, beacon)) for sensor, beacon in data]
     for x, y, d in sensors:
-        y -= d + 1
-        if y < 0:
-            x -= abs(y)
-            y = 0
-        for i in range(d + 1):
-            if all(dist < get_distance((x, y), other_sensor) for *other_sensor, dist in sensors):
-                return x * 4000000 + y
-            x -= 1
-            if x < 0:
-                break
-            y += 1
+        x, y = get_extreme_point(x, y, d)
+        i, k = 0, min(y, d)
+        covered_sensors = get_covered_sensors(sensors, x, y)
+        while i < k:
+            step = 1 << 16
+            while step and not covered_sensors & get_covered_sensors(sensors, x + i + step, y - i - step):
+                step >>= 1
+            if step:
+                i += step
+                covered_sensors &= get_covered_sensors(sensors, x + i, y - i)
+            else:
+                i += 1
+                covered_sensors = get_covered_sensors(sensors, x + i, y - i)
+            if not covered_sensors:
+                return (x + i) * 4000000 + y - i
     return None
 
 if __name__ == '__main__':
